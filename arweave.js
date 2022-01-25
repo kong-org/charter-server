@@ -104,5 +104,4 @@ module.exports = {
   checkIfVerifiedAr,
   persistVerificationAr,
   signDocumentAr,
-  forkDocumentAr,
 }
