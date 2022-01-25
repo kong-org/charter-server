@@ -12,16 +12,15 @@ const arweave = Arweave.init({
 
 const ADMIN_ADDR = process.env.ARWEAVE_ADDRESS
 const KEY = JSON.parse(process.env.ARWEAVE_KEY)
-const DOC_TYPE = "interdependence_doc_type"
-const DOC_ORIGIN = "interdependence_doc_origin"
-const DOC_REF = "interdependence_doc_ref"
-const SIG_NAME = "interdependence_sig_name"
-const SIG_HANDLE = "interdependence_sig_handle"
-const SIG_ADDR = "interdependence_sig_addr"
-const SIG_ISVERIFIED = "interdependence_sig_verified"
-const SIG_SIG = "interdependence_sig_signature"
-const VERIFICATION_HANDLE = "interdependence_verif_handle"
-const VERIFICATION_ADDR = "interdependence_verif_addr"
+const DOC_TYPE = "charter_doc_type"
+const DOC_REF = "charter_doc_ref"
+const SIG_NAME = "charter_sig_name"
+const SIG_HANDLE = "charter_sig_handle"
+const SIG_ADDR = "charter_sig_addr"
+const SIG_ISVERIFIED = "charter_sig_verified"
+const SIG_SIG = "charter_sig_signature"
+const VERIFICATION_HANDLE = "charter_verif_handle"
+const VERIFICATION_ADDR = "charter_verif_addr"
 
 async function checkIfVerifiedAr(handle, address) {
   const req = await fetch('https://arweave.net/graphql', {
@@ -99,25 +98,6 @@ async function signDocumentAr(documentId, address, name, handle, signature, isVe
   transaction.addTag(SIG_ISVERIFIED, isVerified)
   await arweave.transactions.sign(transaction, KEY)
   return await arweave.transactions.post(transaction)
-}
-
-async function forkDocumentAr(oldDocumentId, text, title, authors) {
-  let transaction = await arweave.createTransaction({
-    data: JSON.stringify({
-      title,
-      document: text,
-      authors: authors
-    })
-  }, KEY)
-  transaction.addTag(DOC_TYPE, 'document')
-  if (oldDocumentId) {
-    transaction.addTag(DOC_ORIGIN, oldDocumentId)
-  }
-  await arweave.transactions.sign(transaction, KEY)
-  return {
-    ...await arweave.transactions.post(transaction),
-    id: transaction.id,
-  }
 }
 
 module.exports = {

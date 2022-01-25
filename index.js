@@ -6,13 +6,13 @@ const app = express()
 const cors = require('cors')
 const Twitter = require('twitter')
 const Cache = require('./cache')
-const {checkIfVerifiedAr, persistVerificationAr, signDocumentAr, forkDocumentAr} = require("./arweave")
+const {checkIfVerifiedAr, persistVerificationAr, signDocumentAr} = require("./arweave")
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cors())
 
 const port = process.env.PORT || 8080
-const TWEET_TEMPLATE = "I am verifying for @verses_xyz: sig:"
+const TWEET_TEMPLATE = "I am verifying for @kongiscash: sig:"
 
 const client = new Twitter({
   consumer_key: process.env.CONSUMER_KEY,
@@ -24,32 +24,6 @@ const sigCache = new Cache()
 
 app.get('/', (req, res) => {
   res.send('ok')
-})
-
-app.post('/fork/:document', (req, res) => {
-  const documentId = req.params.document // if undefined, create new document
-  const {
-    authors,
-    text,
-    title,
-  } = req.body
-
-  const totalSize = [authors, text, title]
-    .map(arg => arg || "")
-    .map(txt => Buffer.from(txt).byteLength)
-    .reduce((size, total) => size + total, 0)
-
-  if (totalSize >= (2 << 22)) {
-    res.status(400).json({ status: "too large"})
-    return
-  }
-
-  forkDocumentAr(documentId, text, title, authors)
-    .then((data) => res.json(data))
-    .catch(e => {
-      console.log(`err @ /fork/:document : ${e}`)
-      res.status(500)
-    })
 })
 
 // post: include name, address (from MM), handle
