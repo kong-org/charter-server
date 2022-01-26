@@ -8,6 +8,8 @@ const Twitter = require('twitter')
 const Cache = require('./cache')
 const {checkIfVerifiedAr, persistVerificationAr, signDocumentAr} = require("./arweave")
 
+const util = require('util')
+
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cors())
 
@@ -68,6 +70,7 @@ app.post('/sign/:document', (req, res) => {
 
 // post: include address (from MM)
 app.post('/verify/:handle', (req, res) => {
+
   const handle = req.params.handle
   const {
     address: signature,
@@ -119,7 +122,8 @@ app.post('/verify/:handle', (req, res) => {
       }
       res.status(500).json({message: 'No matching Tweets found'})
     } else {
-      res.status(500).send({message: 'Twitter fetch error'})
+      console.log(util.inspect(response, {showHidden: false, depth: null, colors: true}))
+      res.status(500).send({message: 'Twitter API error'})
     }
   })
 })
