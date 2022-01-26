@@ -119,7 +119,7 @@ app.post('/verify/:handle', (req, res) => {
       }
       res.status(500).json({message: 'No matching Tweets found'})
     } else {
-      res.status(500).send({message: 'Internal Error'})
+      res.status(500).send({message: 'Twitter fetch error'})
     }
   })
 })
